@@ -5,9 +5,10 @@ import {
   MDBCardFooter,
   MDBIcon,
   MDBInput,
+  MDBSpinner,
   MDBValidation,
 } from "mdb-react-ui-kit";
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -18,9 +19,14 @@ function Login() {
     email: "",
     password: "",
   });
+  const { loading, error } = useSelector((state) => ({ ...state.auth }));
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { email, password } = formValues;
+  useEffect(() => {
+    error && toast.error(error);
+  }, [error]);
   const handleSubmit = () => {
     if (email && password) {
       dispatch(
@@ -75,7 +81,16 @@ function Login() {
             </div>
             <div className="col-md-12">
               <MDBBtn style={{ width: "100%" }} className="mt-2">
-                Login
+                {loading ? (
+                  <MDBSpinner
+                    size="sm"
+                    role="status"
+                    tag="span"
+                    className="m-1"
+                  />
+                ) : (
+                  "Login"
+                )}
               </MDBBtn>
             </div>
           </MDBValidation>

@@ -3,7 +3,7 @@ import * as api from "../api";
 
 export const login = createAsyncThunk(
   "auth/login",
-  async ({ formValues, navigate, toast }) => {
+  async ({ formValues, navigate, toast }, { rejectWithValue }) => {
     try {
       const res = await api.signin(formValues);
       toast.success("Login Succefully");
@@ -11,6 +11,22 @@ export const login = createAsyncThunk(
       return res.data;
     } catch (err) {
       console.log(err);
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const register = createAsyncThunk(
+  "auth/register",
+  async ({ formValues, navigate, toast }, { rejectWithValue }) => {
+    try {
+      const res = await api.signup(formValues);
+      toast.success("Registered Succefully");
+      navigate("/");
+      return res.data;
+    } catch (err) {
+      console.log(err);
+      return rejectWithValue(err.response.data);
     }
   }
 );
@@ -20,7 +36,7 @@ const authSLice = createSlice({
   initialState: {
     user: null,
     error: "",
-    laoding: false,
+    loading: false,
   },
   extraReducers: {
     [login.pending]: (state, action) => {
@@ -34,7 +50,21 @@ const authSLice = createSlice({
     },
     [login.rejected]: (state, action) => {
       console.log(action.payload);
-      state.laoding = false;
+      state.loading = false;
+      state.error = action.payload.message;
+    },
+    [register.pending]: (state, action) => {
+      state.loading = true;
+    },
+    [register.fulfilled]: (state, action) => {
+      state.loading = false;
+      localStorage.setItem("profile", JSON.stringify({ ...action.payload }));
+      console.log(action.payload);
+      state.user = action.payload;
+    },
+    [register.rejected]: (state, action) => {
+      console.log(action.payload);
+      state.loading = false;
       state.error = action.payload.message;
     },
   },
