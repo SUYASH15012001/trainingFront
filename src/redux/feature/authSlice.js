@@ -52,6 +52,15 @@ const authSLice = createSlice({
     error: "",
     loading: false,
   },
+  reducers: {
+    setUser: (state, action) => {
+      state.user = action.payload;
+    },
+    setLogout: (state, action) => {
+      state.user = null;
+      localStorage.clear();
+    },
+  },
   extraReducers: {
     [login.pending]: (state, action) => {
       state.loading = true;
@@ -97,5 +106,7 @@ const authSLice = createSlice({
     },
   },
 });
+
+export const { setUser, setLogout } = authSLice.actions;
 
 export default authSLice.reducer;
