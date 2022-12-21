@@ -19,3 +19,4 @@ export const googleLogIn = (res) => API.post("/user/googleLogIn", res);
 // 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 secret
 
 export const createTour = (tourData) => API.post("/tour", tourData);
+export const getTours = () => API.get("/tour");
